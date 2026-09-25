@@ -1,0 +1,52 @@
+<div class="auth-page">
+  <mat-card class="auth-card">
+    <mat-card-header>
+      <mat-card-title>Iniciar sesión</mat-card-title>
+      <mat-card-subtitle>Accede a tu portafolio</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Email o usuario</mat-label>
+          <input matInput formControlName="identifier" autocomplete="username" />
+          <mat-icon matPrefix>person</mat-icon>
+          @if (form.controls.identifier.hasError('required') && form.controls.identifier.touched) {
+            <mat-error>Este campo es obligatorio</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Contraseña</mat-label>
+          <input
+            matInput
+            type="password"
+            formControlName="password"
+            autocomplete="current-password"
+          />
+          <mat-icon matPrefix>lock</mat-icon>
+          @if (form.controls.password.hasError('required') && form.controls.password.touched) {
+            <mat-error>Este campo es obligatorio</mat-error>
+          }
+        </mat-form-field>
+
+        @if (error()) {
+          <div class="error" role="alert">{{ error() }}</div>
+        }
+
+        <button mat-flat-button color="primary" class="submit" type="submit" [disabled]="loading()">
+          @if (loading()) {
+            <mat-spinner diameter="20" />
+          } @else {
+            Entrar
+          }
+        </button>
+      </form>
+    </mat-card-content>
+
+    <mat-card-actions>
+      <span>¿No tienes cuenta?</span>
+      <a mat-button color="primary" routerLink="/register">Regístrate</a>
+    </mat-card-actions>
+  </mat-card>
+</div>
