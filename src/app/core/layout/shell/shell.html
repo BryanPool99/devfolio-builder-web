@@ -1,0 +1,27 @@
+<mat-toolbar color="primary" class="toolbar">
+  <a routerLink="/" class="brand">
+    <mat-icon>deployed_code</mat-icon>
+    <span>Devfolio Builder</span>
+  </a>
+
+  <span class="spacer"></span>
+
+  <nav class="actions">
+    <a mat-button routerLink="/" class="nav-link">Dashboard</a>
+
+    @if (auth.isAuthenticated()) {
+      <span class="username">{{ auth.user()?.username }}</span>
+      <button mat-stroked-button (click)="auth.logout()">
+        <mat-icon>logout</mat-icon>
+        Cerrar sesión
+      </button>
+    } @else {
+      <a mat-button routerLink="/login">Iniciar sesión</a>
+      <a mat-stroked-button routerLink="/register">Registrarse</a>
+    }
+  </nav>
+</mat-toolbar>
+
+<main class="content">
+  <router-outlet />
+</main>

@@ -1,0 +1,40 @@
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  gap: 0.5rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.username {
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.nav-link {
+  text-decoration: none;
+}
+
+.content {
+  display: block;
+  min-height: calc(100vh - 64px);
+  background: #fafafa;
+}
