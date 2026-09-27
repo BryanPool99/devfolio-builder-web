@@ -1,0 +1,83 @@
+<h2 mat-dialog-title>{{ isEdit ? 'Editar proyecto' : 'Nuevo proyecto' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" (ngSubmit)="save()" id="project-form">
+    <mat-form-field appearance="outline">
+      <mat-label>Título *</mat-label>
+      <input matInput formControlName="title" maxlength="120" />
+      @if (form.controls.title.hasError('required') && form.controls.title.touched) {
+        <mat-error>El título es obligatorio</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput rows="4" formControlName="description" maxlength="2000"></textarea>
+      <mat-hint align="end">{{ form.controls.description.value.length }}/2000</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Repositorio</mat-label>
+      <input matInput formControlName="repositoryUrl" placeholder="https://github.com/..." />
+      <mat-icon matPrefix>code</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Demo en vivo</mat-label>
+      <input matInput formControlName="liveDemoUrl" placeholder="https://..." />
+      <mat-icon matPrefix>open_in_new</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>URL de imagen</mat-label>
+      <input matInput formControlName="imageUrl" placeholder="https://..." />
+      <mat-icon matPrefix>image</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Tecnologías</mat-label>
+      <mat-select formControlName="technologyIds" multiple>
+        @for (category of catalog.categories(); track category.id) {
+          <mat-optgroup [label]="category.name">
+            @for (tech of technologiesByCategory(category.id); track tech.id) {
+              <mat-option [value]="tech.id">{{ tech.name }}</mat-option>
+            }
+          </mat-optgroup>
+        }
+        @if (catalog.categories().length === 0 && catalog.technologies().length > 0) {
+          @for (tech of catalog.technologies(); track tech.id) {
+            <mat-option [value]="tech.id">{{ tech.name }}</mat-option>
+          }
+        }
+      </mat-select>
+    </mat-form-field>
+
+    @if (catalog.loading()) {
+      <div class="catalog-loading">
+        <mat-spinner diameter="24" />
+        <span>Cargando tecnologías…</span>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="error" role="alert">{{ error() }}</div>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button type="button" (click)="cancel()" [disabled]="saving()">Cancelar</button>
+  <button
+    mat-flat-button
+    color="primary"
+    type="submit"
+    form="project-form"
+    [disabled]="saving() || form.invalid"
+  >
+    @if (saving()) {
+      <mat-spinner diameter="20" />
+    } @else {
+      {{ isEdit ? 'Guardar cambios' : 'Crear proyecto' }}
+    }
+  </button>
+</mat-dialog-actions>

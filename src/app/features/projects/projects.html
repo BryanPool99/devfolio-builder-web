@@ -1,0 +1,131 @@
+<section class="projects">
+  <header class="projects__header">
+    <div>
+      <h1>Mis proyectos</h1>
+      @if (!service.loading() && !service.error()) {
+        <p class="projects__count">
+          {{ service.totalElements() }}
+          {{ service.totalElements() === 1 ? 'proyecto' : 'proyectos' }}
+        </p>
+      }
+    </div>
+    <button mat-flat-button color="primary" (click)="openCreate()">
+      <mat-icon>add</mat-icon>
+      Nuevo proyecto
+    </button>
+  </header>
+
+  @if (service.loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  @if (service.error(); as error) {
+    <div class="projects__error" role="alert">
+      <span>{{ error }}</span>
+      <button mat-stroked-button (click)="service.reload()">Reintentar</button>
+    </div>
+  }
+
+  @if (service.isEmpty()) {
+    <div class="projects__empty">
+      <mat-icon>folder_open</mat-icon>
+      <h2>No tienes proyectos todavía</h2>
+      <p>Crea tu primer proyecto para empezar a construir tu portafolio.</p>
+      <button mat-flat-button color="primary" (click)="openCreate()">
+        <mat-icon>add</mat-icon>
+        Crear proyecto
+      </button>
+    </div>
+  }
+
+  @if (service.projects().length > 0) {
+    <ul class="projects__list">
+      @for (project of service.projects(); track project.id) {
+        <li class="project-card" [class.project-card--deleting]="deletingId() === project.id">
+          <div class="project-card__media">
+            @if (project.imageUrl; as imageUrl) {
+              <img [src]="imageUrl" [alt]="project.title" />
+            } @else {
+              <mat-icon>image</mat-icon>
+            }
+          </div>
+
+          <div class="project-card__body">
+            <h2>{{ project.title }}</h2>
+            @if (project.description; as description) {
+              <p>{{ description }}</p>
+            }
+
+            @if (project.technologies.length > 0) {
+              <div class="project-card__tech">
+                @for (tech of project.technologies; track tech.id) {
+                  <span class="chip">{{ tech.name }}</span>
+                }
+              </div>
+            }
+          </div>
+
+          <div class="project-card__actions">
+            @if (project.repositoryUrl; as repoUrl) {
+              <a
+                mat-icon-button
+                [href]="repoUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir repositorio"
+                matTooltip="Repositorio"
+              >
+                <mat-icon>code</mat-icon>
+              </a>
+            }
+            @if (project.liveDemoUrl; as demoUrl) {
+              <a
+                mat-icon-button
+                [href]="demoUrl"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Abrir demo"
+                matTooltip="Demo en vivo"
+              >
+                <mat-icon>open_in_new</mat-icon>
+              </a>
+            }
+            <button
+              mat-icon-button
+              aria-label="Editar proyecto"
+              matTooltip="Editar"
+              (click)="openEdit(project)"
+            >
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button
+              mat-icon-button
+              color="warn"
+              aria-label="Eliminar proyecto"
+              matTooltip="Eliminar"
+              [disabled]="deletingId() === project.id"
+              (click)="confirmDelete(project)"
+            >
+              @if (deletingId() === project.id) {
+                <mat-icon>hourglass_top</mat-icon>
+              } @else {
+                <mat-icon>delete</mat-icon>
+              }
+            </button>
+          </div>
+        </li>
+      }
+    </ul>
+
+    @if (service.totalPages() > 1) {
+      <mat-paginator
+        [length]="service.totalElements()"
+        [pageIndex]="service.page()"
+        [pageSize]="service.size()"
+        [pageSizeOptions]="[5, 10, 20]"
+        (page)="onPage($event)"
+        showFirstLastButtons
+      />
+    }
+  }
+</section>

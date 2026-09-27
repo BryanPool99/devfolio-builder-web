@@ -24,8 +24,11 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
       },
-      // TODO Fase 1: ruta /projects (CRUD de proyectos)
-      { path: 'projects', pathMatch: 'full', redirectTo: '' },
+      {
+        path: 'projects',
+        loadComponent: () =>
+          import('./features/projects/projects').then((m) => m.ProjectsComponent),
+      },
       // TODO Fase 2: ruta /editor (editor de bloques)
       { path: 'editor', pathMatch: 'full', redirectTo: '' },
       // TODO Fase 3: vista pública /u/:username (sin guard)

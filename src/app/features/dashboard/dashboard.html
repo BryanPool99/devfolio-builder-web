@@ -5,10 +5,10 @@
     <div class="state">
       <mat-spinner diameter="40" />
     </div>
-  } @else if (error()) {
+  } @else if (error(); as error) {
     <div class="state error" role="alert">
       <mat-icon>error_outline</mat-icon>
-      <p>{{ error() }}</p>
+      <p>{{ error }}</p>
     </div>
   } @else if (data(); as me) {
     <div class="cards">
@@ -31,6 +31,54 @@
           <a mat-button color="primary" routerLink="/">Editar portafolio</a>
         </mat-card-actions>
       </mat-card>
+
+      <mat-card>
+        <mat-card-header>
+          <mat-icon mat-card-avatar>folder</mat-icon>
+          <mat-card-title>{{ projectService.totalElements() }}</mat-card-title>
+          <mat-card-subtitle>
+            {{ projectService.totalElements() === 1 ? 'Proyecto' : 'Proyectos' }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-actions>
+          <a mat-button color="primary" routerLink="/projects">Gestionar proyectos</a>
+        </mat-card-actions>
+      </mat-card>
     </div>
+
+    <mat-card class="recent">
+      <mat-card-header>
+        <mat-card-title>Proyectos recientes</mat-card-title>
+      </mat-card-header>
+
+      @if (projectService.loading()) {
+        <mat-card-content class="state">
+          <mat-spinner diameter="32" />
+        </mat-card-content>
+      } @else if (projectService.projects().length > 0) {
+        <mat-card-content>
+          <mat-list>
+            @for (project of projectService.projects(); track project.id) {
+              <mat-list-item>
+                <mat-icon matListItemIcon>folder_open</mat-icon>
+                <span matListItemTitle>{{ project.title }}</span>
+                @if (project.description; as description) {
+                  <span matListItemLine>{{ description }}</span>
+                }
+              </mat-list-item>
+            }
+          </mat-list>
+        </mat-card-content>
+        <mat-card-actions>
+          <a mat-button color="primary" routerLink="/projects">Ver todos</a>
+        </mat-card-actions>
+      } @else {
+        <mat-card-content class="state empty">
+          <mat-icon>folder_open</mat-icon>
+          <p>Aún no tienes proyectos.</p>
+          <a mat-flat-button color="primary" routerLink="/projects">Crear proyecto</a>
+        </mat-card-content>
+      }
+    </mat-card>
   }
 </section>
