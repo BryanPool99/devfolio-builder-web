@@ -1,0 +1,137 @@
+@for (item of blockEntries(); track item.block.id) {
+  <section
+    class="render-block"
+    [class.render-block--selected]="interactive() && selectedId() === item.block.id"
+    [class.render-block--interactive]="interactive()"
+    (click)="onBlockClick(item.block)"
+    [attr.data-block-type]="item.block.type"
+  >
+    @switch (item.block.type) {
+      @case ('HERO') {
+        @if (heroSettings(item.block); as hero) {
+          <div class="hero">
+            @if (hero.imageUrl) {
+              <img class="hero__image" [src]="hero.imageUrl" [alt]="hero.title" />
+            }
+            <div class="hero__content">
+              <h1>{{ hero.title }}</h1>
+              <p>{{ hero.subtitle }}</p>
+              @if (hero.ctaText) {
+                <a class="hero__cta" [href]="hero.ctaLink || '#'">{{ hero.ctaText }}</a>
+              }
+            </div>
+          </div>
+        }
+      }
+      @case ('ABOUT') {
+        @if (aboutSettings(item.block); as about) {
+          <div class="section">
+            <h2>{{ about.title }}</h2>
+            <p class="muted">{{ about.body }}</p>
+          </div>
+        }
+      }
+      @case ('SKILLS') {
+        @if (skillsSettings(item.block); as skills) {
+          <div class="section">
+            <h2>{{ skills.title }}</h2>
+            <div class="chips">
+              @for (skill of skills.items; track skill) {
+                <span class="chip">{{ skill }}</span>
+              } @empty {
+                <span class="muted">Sin habilidades aún.</span>
+              }
+            </div>
+          </div>
+        }
+      }
+      @case ('PROJECTS') {
+        @if (projectsSettings(item.block); as config) {
+          <div class="section" id="projects">
+            <h2>{{ config.title }}</h2>
+            <div class="projects-grid">
+              @for (project of limitedProjects(config); track project.id) {
+                <article class="project">
+                  @if (project.imageUrl) {
+                    <img [src]="project.imageUrl" [alt]="project.title" />
+                  }
+                  <h3>{{ project.title }}</h3>
+                  <p>{{ project.description }}</p>
+                </article>
+              } @empty {
+                <span class="muted">Aún no hay proyectos.</span>
+              }
+            </div>
+          </div>
+        }
+      }
+      @case ('EXPERIENCE') {
+        @if (experienceSettings(item.block); as experience) {
+          <div class="section">
+            <h2>{{ experience.title }}</h2>
+            <ul class="timeline">
+              @for (role of experience.items; track $index) {
+                <li>
+                  <strong>{{ role.role }}</strong> — {{ role.company }}
+                  <span class="period">{{ role.period }}</span>
+                  <p class="muted">{{ role.description }}</p>
+                </li>
+              } @empty {
+                <li class="muted">Sin experiencia aún.</li>
+              }
+            </ul>
+          </div>
+        }
+      }
+      @case ('EDUCATION') {
+        @if (educationSettings(item.block); as education) {
+          <div class="section">
+            <h2>{{ education.title }}</h2>
+            <ul class="timeline">
+              @for (entry of education.items; track $index) {
+                <li>
+                  <strong>{{ entry.degree }}</strong> — {{ entry.school }}
+                  <span class="period">{{ entry.period }}</span>
+                </li>
+              } @empty {
+                <li class="muted">Sin formación aún.</li>
+              }
+            </ul>
+          </div>
+        }
+      }
+      @case ('CONTACT') {
+        @if (contactSettings(item.block); as contact) {
+          <div class="section">
+            <h2>Contacto</h2>
+            @if (contact.email) {
+              <p>
+                <mat-icon>mail</mat-icon>
+                <a [href]="'mailto:' + contact.email">{{ contact.email }}</a>
+              </p>
+            }
+            <div class="chips">
+              @for (link of contact.socialLinks; track $index) {
+                <a class="chip" [href]="link.url" target="_blank" rel="noopener noreferrer">
+                  {{ link.label }}
+                </a>
+              }
+            </div>
+          </div>
+        }
+      }
+      @case ('CUSTOM_HTML') {
+        <div class="section custom-html" [innerHTML]="customHtml(item.block)"></div>
+      }
+      @default {
+        <div class="section unknown">
+          <p class="muted">Bloque desconocido: {{ item.block.type }}</p>
+        </div>
+      }
+    }
+
+    @if (item.entry === undefined) {
+      <span class="unknown-badge">tipo no soportado</span>
+    }
+  </section>
+}

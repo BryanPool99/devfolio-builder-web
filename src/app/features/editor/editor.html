@@ -1,0 +1,119 @@
+<div class="editor">
+  <header class="editor__bar">
+    <div class="editor__title">
+      <h1>Editor del portafolio</h1>
+      @if (blockService.dirty()) {
+        <span class="badge badge--dirty">Cambios sin guardar</span>
+      }
+    </div>
+    <span class="spacer"></span>
+    <button
+      mat-flat-button
+      color="primary"
+      [disabled]="!blockService.dirty() || blockService.saving()"
+      (click)="save()"
+    >
+      @if (blockService.saving()) {
+        <mat-icon class="spin">progress_activity</mat-icon>
+      } @else {
+        <mat-icon>save</mat-icon>
+      }
+      Guardar
+    </button>
+  </header>
+
+  @if (blockService.error(); as error) {
+    <div class="editor__error" role="alert">
+      <span>{{ error }}</span>
+      <button mat-stroked-button (click)="blockService.load()">Reintentar</button>
+    </div>
+  }
+
+  @if (blockService.loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  } @else {
+    <div class="editor__body">
+      <aside class="palette">
+        <h2>Tu página</h2>
+        <div
+          class="palette__list"
+          cdkDropList
+          (cdkDropListDropped)="onDrop($event)"
+          [cdkDropListData]="blockService.blocks()"
+        >
+          @for (block of blockService.blocks(); track block.id) {
+            <div
+              class="palette__item"
+              cdkDrag
+              [class.palette__item--selected]="selectedId() === block.id"
+              (click)="toggleSelect(block.id)"
+            >
+              <mat-icon class="palette__handle">drag_indicator</mat-icon>
+              <mat-icon>{{ entryIcon(block.type) }}</mat-icon>
+              <span class="palette__label">{{ entryLabel(block.type) }}</span>
+              <button
+                mat-icon-button
+                color="warn"
+                class="palette__delete"
+                aria-label="Eliminar bloque"
+                matTooltip="Eliminar bloque"
+                (click)="$event.stopPropagation(); removeBlock(block)"
+              >
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          } @empty {
+            <p class="palette__empty">Añade tu primer bloque desde abajo.</p>
+          }
+        </div>
+
+        <h2>Añadir bloque</h2>
+        <div class="palette__catalog">
+          @for (item of catalog; track item.type) {
+            <button class="palette__add" type="button" (click)="addBlock(item.type)">
+              <mat-icon>{{ item.icon }}</mat-icon>
+              <span>{{ item.label }}</span>
+            </button>
+          }
+        </div>
+      </aside>
+
+      <main class="canvas">
+        <div class="canvas__frame">
+          @if (isCustomHtmlSelected()) {
+            <div class="canvas__html-editor">
+              <app-custom-html-editor
+                [html]="customHtmlValue()"
+                (htmlChange)="onCustomHtmlChange($event)"
+              />
+            </div>
+          } @else {
+            <app-block-renderer
+              [blocks]="blockService.blocks()"
+              [selectedId]="selectedId()"
+              [interactive]="true"
+              (select)="toggleSelect($event)"
+            />
+          }
+        </div>
+      </main>
+
+      <aside class="inspector">
+        @if (selectedBlock(); as block) {
+          <div class="inspector__head">
+            <span class="inspector__hint">Configuración del bloque</span>
+            <button mat-icon-button aria-label="Cerrar panel" (click)="clearSelection()">
+              <mat-icon>close</mat-icon>
+            </button>
+          </div>
+          <app-settings-panel [block]="block" (settingsChange)="onSettingsChange($event)" />
+        } @else {
+          <div class="inspector__placeholder">
+            <mat-icon>touch_app</mat-icon>
+            <p>Selecciona un bloque del panel izquierdo o del preview para configurarlo.</p>
+          </div>
+        }
+      </aside>
+    </div>
+  }
+</div>

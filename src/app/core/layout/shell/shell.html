@@ -8,6 +8,8 @@
 
   <nav class="actions">
     <a mat-button routerLink="/" class="nav-link">Dashboard</a>
+    <a mat-button routerLink="/projects" class="nav-link">Proyectos</a>
+    <a mat-button routerLink="/editor" class="nav-link">Editor</a>
 
     @if (auth.isAuthenticated()) {
       <span class="username">{{ auth.user()?.username }}</span>
