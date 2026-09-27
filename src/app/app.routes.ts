@@ -29,8 +29,10 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/projects/projects').then((m) => m.ProjectsComponent),
       },
-      // TODO Fase 2: ruta /editor (editor de bloques)
-      { path: 'editor', pathMatch: 'full', redirectTo: '' },
+      {
+        path: 'editor',
+        loadComponent: () => import('./features/editor/editor').then((m) => m.EditorComponent),
+      },
       // TODO Fase 3: vista pública /u/:username (sin guard)
     ],
   },
