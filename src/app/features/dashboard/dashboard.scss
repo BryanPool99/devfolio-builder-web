@@ -32,3 +32,12 @@
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 1rem;
 }
+
+.recent {
+  margin-top: 1.5rem;
+
+  .empty {
+    align-items: center;
+    padding: 2rem 0;
+  }
+}
