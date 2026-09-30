@@ -33,6 +33,12 @@
   font-size: 0.85rem;
 }
 
+// Contenedor formArrayName de los repeaters: no participa del layout para
+// que los hijos sigan siendo items flex de .panel__form tal cual que antes.
+.repeater-group {
+  display: contents;
+}
+
 .repeater {
   border: 1px solid rgba(0, 0, 0, 0.12);
   border-radius: 8px;

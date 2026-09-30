@@ -5,9 +5,11 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { RouterLink } from '@angular/router';
 
 import { BlockService } from '../../core/services/block.service';
 import { ProjectService } from '../../core/services/project.service';
+import { AuthService } from '../../core/auth/auth.service';
 import { Block } from '../../shared/models/portfolio.model';
 import {
   BLOCK_CATALOG,
@@ -31,6 +33,7 @@ let localBlockId = -1;
     MatProgressBarModule,
     MatSnackBarModule,
     MatTooltipModule,
+    RouterLink,
     BlockRendererComponent,
     SettingsPanelComponent,
     CustomHtmlEditorComponent,
@@ -41,10 +44,12 @@ let localBlockId = -1;
 export class EditorComponent implements OnInit {
   readonly blockService = inject(BlockService);
   private readonly projectService = inject(ProjectService);
+  private readonly auth = inject(AuthService);
   private readonly snackBar = inject(MatSnackBar);
 
   readonly catalog = BLOCK_CATALOG;
   readonly selectedId = signal<number | null>(null);
+  readonly username = computed(() => this.auth.user()?.username ?? '');
 
   readonly selectedBlock = computed(() =>
     this.blockService.blocks().find((block) => block.id === this.selectedId()) ?? null,

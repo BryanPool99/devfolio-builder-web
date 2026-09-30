@@ -9,13 +9,7 @@ import {
   output,
   signal,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormArray,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormArray, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
@@ -24,6 +18,7 @@ import { MatInputModule } from '@angular/material/input';
 import { Block } from '../../../shared/models/portfolio.model';
 import {
   AboutSettings,
+  ContactLink,
   ContactSettings,
   EducationSettings,
   ExperienceSettings,
@@ -34,6 +29,14 @@ import {
 } from '../../../shared/models/block-catalog.model';
 import { Subscription } from 'rxjs';
 
+/** Divide un textarea "una por linea" en la lista limpia que se persiste. */
+function splitLines(text: string): string[] {
+  return text
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line.length > 0);
+}
+
 /**
  * Panel de configuracion del bloque seleccionado: construye un formularo
  * reactivo por tipo de bloque y emite `settingsChange` con el JSON serializado
@@ -42,7 +45,13 @@ import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-settings-panel',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ReactiveFormsModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
+  imports: [
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+  ],
   templateUrl: './settings-panel.html',
   styleUrl: './settings-panel.scss',
 })
@@ -56,6 +65,7 @@ export class SettingsPanelComponent implements OnDestroy {
   readonly entry = computed(() => catalogEntry(this.block().type));
 
   private subscription: Subscription | null = null;
+  private lastKey: string | null = null;
 
   constructor() {
     effect(() => this.rebuild());
@@ -66,8 +76,17 @@ export class SettingsPanelComponent implements OnDestroy {
   }
 
   private rebuild(): void {
-    this.subscription?.unsubscribe();
     const block = this.block();
+    const key = `${block.id}:${block.type}`;
+    if (key === this.lastKey) {
+      // Mismo bloque seleccionado: los cambios de settings vienen del propio
+      // form, y reconstruirlo aqui aplicaria el serialize recortado
+      // (trim + filtrado de lineas vacias), comiendose espacios y Enter
+      // en el textarea de habilidades.
+      return;
+    }
+    this.lastKey = key;
+    this.subscription?.unsubscribe();
     const form = this.buildForm(block);
     this.form.set(form);
     this.subscription = form.valueChanges.subscribe(() => this.emit(form, block.type));
@@ -125,9 +144,7 @@ export class SettingsPanelComponent implements OnDestroy {
         const s = parsed as ContactSettings;
         return this.fb.nonNullable.group({
           email: [s.email ?? '', Validators.maxLength(200)],
-          socialLinks: this.fb.array(
-            (s.socialLinks ?? []).map((link) => this.contactLink(link)),
-          ),
+          socialLinks: this.fb.array((s.socialLinks ?? []).map((link) => this.contactLink(link))),
         });
       }
       default:
@@ -141,6 +158,8 @@ export class SettingsPanelComponent implements OnDestroy {
       company: [item?.company ?? '', Validators.maxLength(120)],
       period: [item?.period ?? '', Validators.maxLength(60)],
       description: [item?.description ?? '', Validators.maxLength(1000)],
+      functionsText: [(item?.functions ?? []).join('\n')],
+      technologiesText: [(item?.technologies ?? []).join('\n')],
     });
   }
 
@@ -152,7 +171,7 @@ export class SettingsPanelComponent implements OnDestroy {
     });
   }
 
-  private contactLink(link?: Partial<ContactSettings['socialLinks'][number]>): FormGroup {
+  private contactLink(link?: Partial<ContactLink>): FormGroup {
     return this.fb.nonNullable.group({
       label: [link?.label ?? '', Validators.maxLength(60)],
       url: [link?.url ?? '', Validators.maxLength(500)],
@@ -200,18 +219,28 @@ export class SettingsPanelComponent implements OnDestroy {
   private serialize(raw: Record<string, unknown>, type: string): unknown {
     switch (type) {
       case 'SKILLS': {
-        const text = String(raw['itemsText'] ?? '');
-        const items = text
-          .split('\n')
-          .map((line) => line.trim())
-          .filter((line) => line.length > 0);
-        return { title: String(raw['title'] ?? ''), items } satisfies SkillsSettings;
+        return {
+          title: String(raw['title'] ?? ''),
+          items: splitLines(String(raw['itemsText'] ?? '')),
+        } satisfies SkillsSettings;
       }
       case 'PROJECTS':
         return {
           title: String(raw['title'] ?? ''),
           limit: Number(raw['limit']) || 6,
         } satisfies ProjectsSettings;
+      case 'EXPERIENCE': {
+        const entries = (raw['items'] as Array<Record<string, unknown>> | undefined) ?? [];
+        const items = entries.map((entry) => ({
+          role: String(entry['role'] ?? ''),
+          company: String(entry['company'] ?? ''),
+          period: String(entry['period'] ?? ''),
+          description: String(entry['description'] ?? ''),
+          functions: splitLines(String(entry['functionsText'] ?? '')),
+          technologies: splitLines(String(entry['technologiesText'] ?? '')),
+        }));
+        return { title: String(raw['title'] ?? ''), items } satisfies ExperienceSettings;
+      }
       default:
         return raw;
     }

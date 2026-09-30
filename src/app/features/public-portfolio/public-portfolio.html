@@ -1,0 +1,69 @@
+<div class="public">
+  <mat-toolbar class="public__toolbar">
+    <a routerLink="/" class="public__brand">
+      <mat-icon>deployed_code</mat-icon>
+      <span>Devfolio Builder</span>
+    </a>
+    <span class="spacer"></span>
+    <a mat-stroked-button class="public__cta" routerLink="/register">Crea el tuyo</a>
+  </mat-toolbar>
+
+  <main class="public__main">
+    @if (portfolioService.notFound()) {
+      <div class="state" role="alert">
+        <mat-icon>travel_explore</mat-icon>
+        <h1>Portafolio no encontrado</h1>
+        <p>El portafolio que buscas no existe o aún no está publicado.</p>
+        <div class="state__actions">
+          <a mat-flat-button color="primary" routerLink="/register">Crear mi portafolio</a>
+          <a mat-stroked-button routerLink="/login">Iniciar sesión</a>
+        </div>
+      </div>
+    } @else if (portfolioService.error(); as error) {
+      <div class="state" role="alert">
+        <mat-icon>error_outline</mat-icon>
+        <p>{{ error }}</p>
+        <button mat-stroked-button (click)="retry()">Reintentar</button>
+      </div>
+    } @else if (portfolioService.portfolio(); as portfolio) {
+      @if (portfolioService.loading()) {
+        <mat-progress-bar mode="query" class="public__progress" />
+      }
+
+      @if (portfolio.blocks.length === 0) {
+        <div class="state">
+          <mat-icon>widgets</mat-icon>
+          <p>Este portafolio aún no tiene contenido.</p>
+        </div>
+      } @else {
+        <div class="public__blocks">
+          <app-block-renderer
+            [blocks]="portfolio.blocks"
+            [projects]="portfolioService.projects()"
+          />
+        </div>
+      }
+
+      @if (portfolioService.totalPages() > 1) {
+        <mat-paginator
+          class="public__paginator"
+          [length]="portfolioService.totalElements()"
+          [pageIndex]="portfolio.projects.page"
+          [pageSize]="portfolioService.pageSize()"
+          [pageSizeOptions]="[]"
+          [showFirstLastButtons]="true"
+          (page)="onPage($event)"
+        />
+      }
+    } @else {
+      <div class="state">
+        <mat-spinner diameter="40" />
+      </div>
+    }
+  </main>
+
+  <footer class="public__footer">
+    <span>Creado con</span>
+    <a routerLink="/">Devfolio Builder</a>
+  </footer>
+</div>

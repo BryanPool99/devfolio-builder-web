@@ -36,7 +36,7 @@
           <div class="section">
             <h2>{{ skills.title }}</h2>
             <div class="chips">
-              @for (skill of skills.items; track skill) {
+              @for (skill of skills.items; track $index) {
                 <span class="chip">{{ skill }}</span>
               } @empty {
                 <span class="muted">Sin habilidades aún.</span>
@@ -57,6 +57,32 @@
                   }
                   <h3>{{ project.title }}</h3>
                   <p>{{ project.description }}</p>
+                  @if (project.liveDemoUrl || project.repositoryUrl) {
+                    <div class="project__actions">
+                      @if (project.liveDemoUrl) {
+                        <a
+                          class="project__link"
+                          [href]="project.liveDemoUrl"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <mat-icon>open_in_new</mat-icon>
+                          Ver web
+                        </a>
+                      }
+                      @if (project.repositoryUrl) {
+                        <a
+                          class="project__link"
+                          [href]="project.repositoryUrl"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <mat-icon>code</mat-icon>
+                          Repositorio
+                        </a>
+                      }
+                    </div>
+                  }
                 </article>
               } @empty {
                 <span class="muted">Aún no hay proyectos.</span>
@@ -74,7 +100,23 @@
                 <li>
                   <strong>{{ role.role }}</strong> — {{ role.company }}
                   <span class="period">{{ role.period }}</span>
-                  <p class="muted">{{ role.description }}</p>
+                  @if (role.description) {
+                    <p class="muted">{{ role.description }}</p>
+                  }
+                  @if (role.functions?.length) {
+                    <ul class="functions">
+                      @for (fn of role.functions ?? []; track $index) {
+                        <li>{{ fn }}</li>
+                      }
+                    </ul>
+                  }
+                  @if (role.technologies?.length) {
+                    <div class="chips">
+                      @for (tech of role.technologies ?? []; track $index) {
+                        <span class="chip">{{ tech }}</span>
+                      }
+                    </div>
+                  }
                 </li>
               } @empty {
                 <li class="muted">Sin experiencia aún.</li>
@@ -102,21 +144,41 @@
       }
       @case ('CONTACT') {
         @if (contactSettings(item.block); as contact) {
-          <div class="section">
+          <div class="section contact">
             <h2>Contacto</h2>
+
             @if (contact.email) {
-              <p>
-                <mat-icon>mail</mat-icon>
-                <a [href]="'mailto:' + contact.email">{{ contact.email }}</a>
-              </p>
+              <a class="contact__email" [href]="'mailto:' + contact.email">
+                <span class="contact__email-icon">
+                  <mat-icon>mail</mat-icon>
+                </span>
+                <span class="contact__email-body">
+                  <span class="contact__email-label">Escríbeme a</span>
+                  <span class="contact__email-value">{{ contact.email }}</span>
+                </span>
+                <mat-icon class="contact__email-arrow">arrow_outward</mat-icon>
+              </a>
             }
-            <div class="chips">
-              @for (link of contact.socialLinks; track $index) {
-                <a class="chip" [href]="link.url" target="_blank" rel="noopener noreferrer">
-                  {{ link.label }}
-                </a>
-              }
-            </div>
+
+            @if (contact.socialLinks?.length) {
+              <div class="contact__socials">
+                @for (link of contact.socialLinks ?? []; track $index) {
+                  <a
+                    class="contact__social"
+                    [href]="link.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <mat-icon>{{ socialIcon(link.url) }}</mat-icon>
+                    <span>{{ link.label }}</span>
+                  </a>
+                }
+              </div>
+            }
+
+            @if (!contact.email && !contact.socialLinks?.length) {
+              <p class="muted">Añade tu email o tus redes sociales en la configuración.</p>
+            }
           </div>
         }
       }

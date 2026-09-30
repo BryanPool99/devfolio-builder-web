@@ -7,6 +7,18 @@
       }
     </div>
     <span class="spacer"></span>
+    @if (username(); as username) {
+      <a
+        mat-stroked-button
+        [routerLink]="['/u', username]"
+        target="_blank"
+        rel="noopener"
+        title="Abre la vista pública en una pestaña nueva"
+      >
+        <mat-icon>open_in_new</mat-icon>
+        Ver público
+      </a>
+    }
     <button
       mat-flat-button
       color="primary"

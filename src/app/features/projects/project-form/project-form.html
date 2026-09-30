@@ -59,6 +59,18 @@
       </div>
     }
 
+    <div class="visibility-row">
+      <div class="visibility-row__text">
+        <span class="visibility-row__label">{{
+          form.controls.visible.value ? 'Proyecto público' : 'Proyecto oculto'
+        }}</span>
+        <span class="visibility-row__hint"
+          >Los proyectos ocultos no aparecen en tu portafolio público.</span
+        >
+      </div>
+      <mat-slide-toggle formControlName="visible" ariaLabel="Visibilidad del proyecto" />
+    </div>
+
     @if (error()) {
       <div class="error" role="alert">{{ error() }}</div>
     }

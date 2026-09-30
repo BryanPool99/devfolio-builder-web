@@ -17,6 +17,34 @@ mat-dialog-content {
   font-size: 0.875rem;
 }
 
+.visibility-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  background: #f7f9fd;
+
+  &__text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.125rem;
+  }
+
+  &__label {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  &__hint {
+    color: rgba(0, 0, 0, 0.6);
+    font-size: 0.75rem;
+  }
+}
+
 .error {
   color: #c62828;
   font-size: 0.875rem;

@@ -41,7 +41,11 @@
   @if (service.projects().length > 0) {
     <ul class="projects__list">
       @for (project of service.projects(); track project.id) {
-        <li class="project-card" [class.project-card--deleting]="deletingId() === project.id">
+        <li
+          class="project-card"
+          [class.project-card--deleting]="deletingId() === project.id"
+          [class.project-card--hidden]="!project.visible"
+        >
           <div class="project-card__media">
             @if (project.imageUrl; as imageUrl) {
               <img [src]="imageUrl" [alt]="project.title" />
@@ -66,52 +70,74 @@
           </div>
 
           <div class="project-card__actions">
-            @if (project.repositoryUrl; as repoUrl) {
-              <a
-                mat-icon-button
-                [href]="repoUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Abrir repositorio"
-                matTooltip="Repositorio"
-              >
-                <mat-icon>code</mat-icon>
-              </a>
-            }
-            @if (project.liveDemoUrl; as demoUrl) {
-              <a
-                mat-icon-button
-                [href]="demoUrl"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Abrir demo"
-                matTooltip="Demo en vivo"
-              >
-                <mat-icon>open_in_new</mat-icon>
-              </a>
-            }
-            <button
-              mat-icon-button
-              aria-label="Editar proyecto"
-              matTooltip="Editar"
-              (click)="openEdit(project)"
-            >
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button
-              mat-icon-button
-              color="warn"
-              aria-label="Eliminar proyecto"
-              matTooltip="Eliminar"
-              [disabled]="deletingId() === project.id"
-              (click)="confirmDelete(project)"
-            >
-              @if (deletingId() === project.id) {
-                <mat-icon>hourglass_top</mat-icon>
-              } @else {
-                <mat-icon>delete</mat-icon>
+            <div class="project-card__visibility">
+              <span class="status" [class.status--hidden]="!project.visible">
+                @if (project.visible) {
+                  <mat-icon>public</mat-icon>
+                  <span>Público</span>
+                } @else {
+                  <mat-icon>visibility_off</mat-icon>
+                  <span>Oculto</span>
+                }
+              </span>
+              <mat-slide-toggle
+                [checked]="project.visible"
+                [disabled]="togglingId() === project.id"
+                [attr.aria-label]="
+                  (project.visible ? 'Ocultar ' : 'Publicar ') + 'proyecto ' + project.title
+                "
+                (change)="toggleVisibility(project)"
+              />
+            </div>
+
+            <div class="project-card__buttons">
+              @if (project.repositoryUrl; as repoUrl) {
+                <a
+                  mat-icon-button
+                  [href]="repoUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Abrir repositorio"
+                  matTooltip="Repositorio"
+                >
+                  <mat-icon>code</mat-icon>
+                </a>
               }
-            </button>
+              @if (project.liveDemoUrl; as demoUrl) {
+                <a
+                  mat-icon-button
+                  [href]="demoUrl"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Abrir demo"
+                  matTooltip="Demo en vivo"
+                >
+                  <mat-icon>open_in_new</mat-icon>
+                </a>
+              }
+              <button
+                mat-icon-button
+                aria-label="Editar proyecto"
+                matTooltip="Editar"
+                (click)="openEdit(project)"
+              >
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button
+                mat-icon-button
+                color="warn"
+                aria-label="Eliminar proyecto"
+                matTooltip="Eliminar"
+                [disabled]="deletingId() === project.id"
+                (click)="confirmDelete(project)"
+              >
+                @if (deletingId() === project.id) {
+                  <mat-icon>hourglass_top</mat-icon>
+                } @else {
+                  <mat-icon>delete</mat-icon>
+                }
+              </button>
+            </div>
           </div>
         </li>
       }
