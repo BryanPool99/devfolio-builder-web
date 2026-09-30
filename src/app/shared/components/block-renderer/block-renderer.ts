@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, inject, input, output } f
 import { MatIconModule } from '@angular/material/icon';
 
 import { ProjectService } from '../../../core/services/project.service';
+import { Project } from '../../models/project.model';
 import { Block } from '../../models/portfolio.model';
 import {
   AboutSettings,
@@ -17,8 +18,9 @@ import {
 
 /**
  * Render read-only de los bloques del portafolio. Lo usan el preview del
- * editor (interactive=true: emite select al clicar un bloque) y, en la Fase 3,
- * la vista publica (interactive=false).
+ * editor (interactive=true: emite select al clicar un bloque) y la vista
+ * publica (interactive=false), que ademas inyecta sus propios proyectos via
+ * el input `projects` (por defecto lee ProjectService autenticado).
  */
 @Component({
   selector: 'app-block-renderer',
@@ -33,9 +35,11 @@ export class BlockRendererComponent {
   readonly blocks = input.required<Block[]>();
   readonly selectedId = input<number | null>(null);
   readonly interactive = input(false);
+  readonly projects = input<Project[] | undefined>(undefined);
   readonly select = output<number>();
 
-  readonly projects = this.projectService.projects;
+  private readonly serviceProjects = this.projectService.projects;
+  readonly effectiveProjects = computed(() => this.projects() ?? this.serviceProjects());
 
   readonly blockEntries = computed(() =>
     this.blocks().map((block) => ({ block, entry: catalogEntry(block.type) })),
@@ -81,9 +85,23 @@ export class BlockRendererComponent {
     return this.settings<CustomHtmlSettings>(block).html ?? '';
   }
 
-  limitedProjects(settings: ProjectsSettings) {
+  /** Icono material segun el dominio del enlace social. */
+  socialIcon(url: string): string {
+    const value = (url ?? '').toLowerCase();
+    if (value.includes('github')) return 'code';
+    if (value.includes('linkedin')) return 'work';
+    if (value.includes('twitter') || value.includes('x.com')) return 'alternate_email';
+    if (value.includes('instagram')) return 'photo_camera';
+    if (value.includes('youtube')) return 'smart_display';
+    if (value.includes('behance') || value.includes('dribbble')) return 'palette';
+    if (value.includes('tel:')) return 'call';
+    if (value.includes('wa.me') || value.includes('whatsapp')) return 'chat';
+    return 'link';
+  }
+
+  limitedProjects(settings: ProjectsSettings): Project[] {
     const limit = settings.limit > 0 ? settings.limit : 6;
-    return this.projects().slice(0, limit);
+    return this.effectiveProjects().slice(0, limit);
   }
 
   onBlockClick(block: Block): void {

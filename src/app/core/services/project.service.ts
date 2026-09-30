@@ -37,21 +37,19 @@ export class ProjectService {
     this._loading.set(true);
     this._error.set(null);
     const params = new HttpParams().set('page', page).set('size', size);
-    this.http
-      .get<Page<Project>>(`${environment.apiUrl}/portfolio/projects`, { params })
-      .subscribe({
-        next: (response) => {
-          this._projects.set(response.content);
-          this._page.set(response.page);
-          this._size.set(response.size);
-          this._totalElements.set(response.totalElements);
-          this._loading.set(false);
-        },
-        error: (err: unknown) => {
-          this._error.set(httpErrorMessage(err));
-          this._loading.set(false);
-        },
-      });
+    this.http.get<Page<Project>>(`${environment.apiUrl}/portfolio/projects`, { params }).subscribe({
+      next: (response) => {
+        this._projects.set(response.content);
+        this._page.set(response.page);
+        this._size.set(response.size);
+        this._totalElements.set(response.totalElements);
+        this._loading.set(false);
+      },
+      error: (err: unknown) => {
+        this._error.set(httpErrorMessage(err));
+        this._loading.set(false);
+      },
+    });
   }
 
   reload(): void {
@@ -68,6 +66,20 @@ export class ProjectService {
     return this.http
       .put<Project>(`${environment.apiUrl}/portfolio/projects/${id}`, request)
       .pipe(tap(() => this.reload()));
+  }
+
+  /** Alterna la visibilidad reutilizando update con los datos actuales. */
+  toggleVisibility(project: Project): Observable<Project> {
+    const request: ProjectRequest = {
+      title: project.title,
+      description: project.description,
+      repositoryUrl: project.repositoryUrl,
+      liveDemoUrl: project.liveDemoUrl,
+      imageUrl: project.imageUrl,
+      technologyIds: project.technologies.map((tech) => tech.id),
+      visible: !project.visible,
+    };
+    return this.update(project.id, request);
   }
 
   remove(id: number): Observable<void> {

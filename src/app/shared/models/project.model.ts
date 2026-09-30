@@ -13,6 +13,8 @@ export interface Project {
   imageUrl: string | null;
   createdAt: string;
   technologies: TechnologySummary[];
+  /** false: el proyecto no aparece en el portafolio público. */
+  visible: boolean;
 }
 
 /** Cuerpo de POST/PUT /portfolio/projects. */
@@ -23,4 +25,5 @@ export interface ProjectRequest {
   liveDemoUrl: string | null;
   imageUrl: string | null;
   technologyIds: number[];
+  visible: boolean;
 }

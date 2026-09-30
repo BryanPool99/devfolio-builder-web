@@ -6,6 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 import { httpErrorMessage } from '../../core/http/error-message';
@@ -24,6 +25,7 @@ import { ProjectFormComponent } from './project-form/project-form';
     MatPaginatorModule,
     MatProgressBarModule,
     MatSnackBarModule,
+    MatSlideToggleModule,
     MatTooltipModule,
     MatDialogModule,
   ],
@@ -36,6 +38,7 @@ export class ProjectsComponent implements OnInit {
   private readonly snackBar = inject(MatSnackBar);
 
   readonly deletingId = signal<number | null>(null);
+  readonly togglingId = signal<number | null>(null);
 
   ngOnInit(): void {
     this.service.load(0, PROJECTS_PAGE_SIZE);
@@ -67,6 +70,26 @@ export class ProjectsComponent implements OnInit {
           });
         }
       });
+  }
+
+  toggleVisibility(project: Project): void {
+    this.togglingId.set(project.id);
+    this.service.toggleVisibility(project).subscribe({
+      next: (updated) => {
+        this.togglingId.set(null);
+        this.snackBar.open(
+          updated.visible
+            ? `Proyecto "${updated.title}" publicado`
+            : `Proyecto "${updated.title}" oculto en tu portafolio`,
+          'Cerrar',
+          { duration: 4000 },
+        );
+      },
+      error: (err: unknown) => {
+        this.togglingId.set(null);
+        this.snackBar.open(httpErrorMessage(err), 'Cerrar', { duration: 6000 });
+      },
+    });
   }
 
   confirmDelete(project: Project): void {

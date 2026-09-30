@@ -4,14 +4,7 @@
  * define la forma de su `settings` (persistido como string JSON en la API).
  */
 export type BlockType =
-  | 'HERO'
-  | 'ABOUT'
-  | 'SKILLS'
-  | 'PROJECTS'
-  | 'EXPERIENCE'
-  | 'EDUCATION'
-  | 'CONTACT'
-  | 'CUSTOM_HTML';
+  'HERO' | 'ABOUT' | 'SKILLS' | 'PROJECTS' | 'EXPERIENCE' | 'EDUCATION' | 'CONTACT' | 'CUSTOM_HTML';
 
 export interface HeroSettings {
   title: string;
@@ -40,7 +33,12 @@ export interface ExperienceItem {
   role: string;
   company: string;
   period: string;
+  /** Opcional: se omite en la vista cuando esta vacio. */
   description: string;
+  /** Tecnologias/habilidades usadas en el puesto (chips en la vista). Opcional en bloques guardados antes de la v1. */
+  technologies?: string[];
+  /** Funciones desempenadas (lista <ul> en la vista). Opcional en bloques guardados antes de la v1. */
+  functions?: string[];
 }
 
 export interface ExperienceSettings {
@@ -66,7 +64,8 @@ export interface ContactLink {
 
 export interface ContactSettings {
   email: string;
-  socialLinks: ContactLink[];
+  /** Opcional: bloques guardados sin redes. */
+  socialLinks?: ContactLink[];
 }
 
 export interface CustomHtmlSettings {
@@ -144,16 +143,24 @@ export const BLOCK_CATALOG: readonly BlockCatalogEntry[] = [
     description: 'Email y enlaces a redes sociales',
     createDefault: (): ContactSettings => ({ email: '', socialLinks: [] }),
   },
-  {
-    type: 'CUSTOM_HTML',
-    label: 'HTML personalizado',
-    icon: 'code',
-    description: 'Bloque libre editado con GrapesJS',
-    createDefault: (): CustomHtmlSettings => ({ html: '<p>Escribe tu HTML aquí…</p>' }),
-  },
 ];
 
-const CATALOG_BY_TYPE = new Map(BLOCK_CATALOG.map((entry) => [entry.type, entry]));
+/**
+ * HTML personalizado: fuera de la paleta "Añadir bloque" por ahora, pero
+ * sigue registrado en CATALOG_BY_TYPE para que los bloques CUSTOM_HTML
+ * ya guardados mantengan su etiqueta, icono y settings por defecto.
+ */
+const CUSTOM_HTML_ENTRY: BlockCatalogEntry = {
+  type: 'CUSTOM_HTML',
+  label: 'HTML personalizado',
+  icon: 'code',
+  description: 'Bloque libre editado con GrapesJS',
+  createDefault: (): CustomHtmlSettings => ({ html: '<p>Escribe tu HTML aquí…</p>' }),
+};
+
+const CATALOG_BY_TYPE = new Map(
+  [...BLOCK_CATALOG, CUSTOM_HTML_ENTRY].map((entry) => [entry.type, entry]),
+);
 
 export function catalogEntry(type: string): BlockCatalogEntry | undefined {
   return CATALOG_BY_TYPE.get(type as BlockType);

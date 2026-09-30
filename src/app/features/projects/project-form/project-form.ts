@@ -7,6 +7,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSelectModule } from '@angular/material/select';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 import { httpErrorMessage } from '../../../core/http/error-message';
 import { CatalogService } from '../../../core/services/catalog.service';
@@ -34,6 +35,7 @@ export interface ProjectFormData {
     MatSelectModule,
     MatIconModule,
     MatProgressSpinnerModule,
+    MatSlideToggleModule,
   ],
   templateUrl: './project-form.html',
   styleUrl: './project-form.scss',
@@ -59,6 +61,7 @@ export class ProjectFormComponent implements OnInit {
     liveDemoUrl: ['', Validators.maxLength(500)],
     imageUrl: ['', Validators.maxLength(500)],
     technologyIds: this.fb.nonNullable.control<number[]>([]),
+    visible: this.fb.nonNullable.control(true),
   });
 
   ngOnInit(): void {
@@ -72,6 +75,7 @@ export class ProjectFormComponent implements OnInit {
         liveDemoUrl: project.liveDemoUrl ?? '',
         imageUrl: project.imageUrl ?? '',
         technologyIds: project.technologies.map((tech) => tech.id),
+        visible: project.visible,
       });
     }
   }
@@ -96,6 +100,7 @@ export class ProjectFormComponent implements OnInit {
       liveDemoUrl: emptyToNull(raw.liveDemoUrl),
       imageUrl: emptyToNull(raw.imageUrl),
       technologyIds: raw.technologyIds,
+      visible: raw.visible,
     };
 
     this.saving.set(true);

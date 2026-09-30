@@ -33,8 +33,14 @@ export const routes: Routes = [
         path: 'editor',
         loadComponent: () => import('./features/editor/editor').then((m) => m.EditorComponent),
       },
-      // TODO Fase 3: vista pública /u/:username (sin guard)
     ],
+  },
+  {
+    path: 'u/:username',
+    loadComponent: () =>
+      import('./features/public-portfolio/public-portfolio').then(
+        (m) => m.PublicPortfolioComponent,
+      ),
   },
   { path: '**', redirectTo: '' },
 ];

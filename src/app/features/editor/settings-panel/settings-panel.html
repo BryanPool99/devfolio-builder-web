@@ -68,34 +68,44 @@
           <input matInput formControlName="title" />
         </mat-form-field>
 
-        @for (item of experienceItems().controls; track $index; let i = $index) {
-          <div class="repeater" [formGroupName]="i">
-            <div class="repeater__head">
-              <strong>Entrada {{ i + 1 }}</strong>
-              <button mat-icon-button color="warn" type="button" (click)="removeItem('EXPERIENCE', i)" aria-label="Eliminar">
-                <mat-icon>delete</mat-icon>
-              </button>
+        <div class="repeater-group" formArrayName="items">
+          @for (item of experienceItems().controls; track $index; let i = $index) {
+            <div class="repeater" [formGroupName]="i">
+              <div class="repeater__head">
+                <strong>Entrada {{ i + 1 }}</strong>
+                <button mat-icon-button color="warn" type="button" (click)="removeItem('EXPERIENCE', i)" aria-label="Eliminar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              <mat-form-field appearance="outline">
+                <mat-label>Cargo</mat-label>
+                <input matInput formControlName="role" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Empresa</mat-label>
+                <input matInput formControlName="company" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Periodo</mat-label>
+                <input matInput formControlName="period" placeholder="2023 — 2024" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Descripción (opcional)</mat-label>
+                <textarea matInput rows="2" formControlName="description"></textarea>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Funciones (una por línea)</mat-label>
+                <textarea matInput rows="3" formControlName="functionsText"></textarea>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Tecnologías usadas (una por línea)</mat-label>
+                <textarea matInput rows="3" formControlName="technologiesText"></textarea>
+              </mat-form-field>
             </div>
-            <mat-form-field appearance="outline">
-              <mat-label>Cargo</mat-label>
-              <input matInput formControlName="role" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Empresa</mat-label>
-              <input matInput formControlName="company" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Periodo</mat-label>
-              <input matInput formControlName="period" placeholder="2023 — 2024" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Descripción</mat-label>
-              <textarea matInput rows="2" formControlName="description"></textarea>
-            </mat-form-field>
-          </div>
-        } @empty {
-          <p class="hint">Sin entradas todavía.</p>
-        }
+          } @empty {
+            <p class="hint">Sin entradas todavía.</p>
+          }
+        </div>
 
         <button mat-stroked-button type="button" (click)="addItem('EXPERIENCE')">
           <mat-icon>add</mat-icon>
@@ -108,30 +118,32 @@
           <input matInput formControlName="title" />
         </mat-form-field>
 
-        @for (item of educationItems().controls; track $index; let i = $index) {
-          <div class="repeater" [formGroupName]="i">
-            <div class="repeater__head">
-              <strong>Entrada {{ i + 1 }}</strong>
-              <button mat-icon-button color="warn" type="button" (click)="removeItem('EDUCATION', i)" aria-label="Eliminar">
-                <mat-icon>delete</mat-icon>
-              </button>
+        <div class="repeater-group" formArrayName="items">
+          @for (item of educationItems().controls; track $index; let i = $index) {
+            <div class="repeater" [formGroupName]="i">
+              <div class="repeater__head">
+                <strong>Entrada {{ i + 1 }}</strong>
+                <button mat-icon-button color="warn" type="button" (click)="removeItem('EDUCATION', i)" aria-label="Eliminar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              <mat-form-field appearance="outline">
+                <mat-label>Titulación</mat-label>
+                <input matInput formControlName="degree" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Institución</mat-label>
+                <input matInput formControlName="school" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Periodo</mat-label>
+                <input matInput formControlName="period" />
+              </mat-form-field>
             </div>
-            <mat-form-field appearance="outline">
-              <mat-label>Titulación</mat-label>
-              <input matInput formControlName="degree" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Institución</mat-label>
-              <input matInput formControlName="school" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>Periodo</mat-label>
-              <input matInput formControlName="period" />
-            </mat-form-field>
-          </div>
-        } @empty {
-          <p class="hint">Sin entradas todavía.</p>
-        }
+          } @empty {
+            <p class="hint">Sin entradas todavía.</p>
+          }
+        </div>
 
         <button mat-stroked-button type="button" (click)="addItem('EDUCATION')">
           <mat-icon>add</mat-icon>
@@ -144,26 +156,28 @@
           <input matInput formControlName="email" />
         </mat-form-field>
 
-        @for (link of contactLinks().controls; track $index; let i = $index) {
-          <div class="repeater" [formGroupName]="i">
-            <div class="repeater__head">
-              <strong>Enlace {{ i + 1 }}</strong>
-              <button mat-icon-button color="warn" type="button" (click)="removeItem('CONTACT', i)" aria-label="Eliminar">
-                <mat-icon>delete</mat-icon>
-              </button>
+        <div class="repeater-group" formArrayName="socialLinks">
+          @for (link of contactLinks().controls; track $index; let i = $index) {
+            <div class="repeater" [formGroupName]="i">
+              <div class="repeater__head">
+                <strong>Enlace {{ i + 1 }}</strong>
+                <button mat-icon-button color="warn" type="button" (click)="removeItem('CONTACT', i)" aria-label="Eliminar">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </div>
+              <mat-form-field appearance="outline">
+                <mat-label>Nombre</mat-label>
+                <input matInput formControlName="label" placeholder="GitHub" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>URL</mat-label>
+                <input matInput formControlName="url" placeholder="https://…" />
+              </mat-form-field>
             </div>
-            <mat-form-field appearance="outline">
-              <mat-label>Nombre</mat-label>
-              <input matInput formControlName="label" placeholder="GitHub" />
-            </mat-form-field>
-            <mat-form-field appearance="outline">
-              <mat-label>URL</mat-label>
-              <input matInput formControlName="url" placeholder="https://…" />
-            </mat-form-field>
-          </div>
-        } @empty {
-          <p class="hint">Sin enlaces todavía.</p>
-        }
+          } @empty {
+            <p class="hint">Sin enlaces todavía.</p>
+          }
+        </div>
 
         <button mat-stroked-button type="button" (click)="addItem('CONTACT')">
           <mat-icon>add</mat-icon>

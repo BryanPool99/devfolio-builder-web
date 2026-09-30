@@ -28,6 +28,15 @@
         </mat-card-header>
         <mat-card-actions>
           <a mat-button color="primary" routerLink="/editor">Editar portafolio</a>
+          <a
+            mat-button
+            color="primary"
+            [routerLink]="['/u', me.user.username]"
+            target="_blank"
+            rel="noopener"
+          >
+            Ver portafolio
+          </a>
         </mat-card-actions>
       </mat-card>
 
