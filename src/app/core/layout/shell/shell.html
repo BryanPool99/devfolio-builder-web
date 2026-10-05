@@ -1,22 +1,56 @@
-<mat-toolbar color="primary" class="toolbar">
+<mat-toolbar class="toolbar">
   <a routerLink="/" class="brand">
-    <mat-icon>deployed_code</mat-icon>
+    <mat-icon class="brand__icon">deployed_code</mat-icon>
     <span>Devfolio Builder</span>
   </a>
 
   <span class="spacer"></span>
 
   <nav class="actions">
-    <a mat-button routerLink="/" class="nav-link">Dashboard</a>
-    <a mat-button routerLink="/projects" class="nav-link">Proyectos</a>
-    <a mat-button routerLink="/editor" class="nav-link">Editor</a>
+    <a
+      mat-button
+      routerLink="/"
+      [routerLinkActiveOptions]="{ exact: true }"
+      routerLinkActive="active"
+      class="nav-link"
+      >Dashboard</a
+    >
+    <a mat-button routerLink="/projects" routerLinkActive="active" class="nav-link">Proyectos</a>
+    <a mat-button routerLink="/editor" routerLinkActive="active" class="nav-link">Editor</a>
 
     @if (auth.isAuthenticated()) {
       <span class="username">{{ auth.user()?.username }}</span>
-      <button mat-stroked-button (click)="auth.logout()">
+      <button mat-stroked-button class="logout-desktop" (click)="auth.logout()">
         <mat-icon>logout</mat-icon>
         Cerrar sesión
       </button>
+
+      <button
+        mat-icon-button
+        class="menu-button"
+        [matMenuTriggerFor]="navMenu"
+        aria-label="Abrir menú de navegación"
+      >
+        <mat-icon>menu</mat-icon>
+      </button>
+      <mat-menu #navMenu="matMenu" xPosition="before">
+        <button mat-menu-item routerLink="/">
+          <mat-icon>dashboard</mat-icon>
+          <span>Dashboard</span>
+        </button>
+        <button mat-menu-item routerLink="/projects">
+          <mat-icon>folder</mat-icon>
+          <span>Proyectos</span>
+        </button>
+        <button mat-menu-item routerLink="/editor">
+          <mat-icon>widgets</mat-icon>
+          <span>Editor</span>
+        </button>
+        <button mat-menu-item (click)="auth.logout()">
+          <mat-icon>logout</mat-icon>
+          <span>Cerrar sesión</span>
+        </button>
+      </mat-menu>
     } @else {
       <a mat-button routerLink="/login">Iniciar sesión</a>
       <a mat-stroked-button routerLink="/register">Registrarse</a>

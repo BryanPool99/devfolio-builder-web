@@ -1,8 +1,11 @@
 <div class="auth-page">
   <mat-card class="auth-card">
     <mat-card-header>
-      <mat-card-title>Crear cuenta</mat-card-title>
-      <mat-card-subtitle>Publica tu portafolio en minutos</mat-card-subtitle>
+      <mat-card-title-group>
+        <span mat-card-avatar class="auth-avatar"><mat-icon>deployed_code</mat-icon></span>
+        <mat-card-title>Crear cuenta</mat-card-title>
+        <mat-card-subtitle>Publica tu portafolio en minutos</mat-card-subtitle>
+      </mat-card-title-group>
     </mat-card-header>
 
     <mat-card-content>
@@ -19,6 +22,7 @@
             <mat-error>3-30 caracteres: minúsculas, números o guiones</mat-error>
           }
         </mat-form-field>
+        <p class="field-hint">Usa 3–30 caracteres: minúsculas, números o guiones.</p>
 
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
@@ -47,6 +51,7 @@
             <mat-error>Máximo 72 caracteres</mat-error>
           }
         </mat-form-field>
+        <p class="field-hint">Usa 8 caracteres o más.</p>
 
         <mat-form-field appearance="outline">
           <mat-label>Confirmar contraseña</mat-label>

@@ -43,7 +43,7 @@
       <mat-card>
         <mat-card-header>
           <mat-icon mat-card-avatar>folder</mat-icon>
-          <mat-card-title>{{ projectService.totalElements() }}</mat-card-title>
+          <mat-card-title class="stat">{{ projectService.totalElements() }}</mat-card-title>
           <mat-card-subtitle>
             {{ projectService.totalElements() === 1 ? 'Proyecto' : 'Proyectos' }}
           </mat-card-subtitle>

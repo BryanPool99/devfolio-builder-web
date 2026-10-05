@@ -3,8 +3,8 @@
 <mat-dialog-content>
   <form [formGroup]="form" (ngSubmit)="save()" id="project-form">
     <mat-form-field appearance="outline">
-      <mat-label>Título *</mat-label>
-      <input matInput formControlName="title" maxlength="120" />
+      <mat-label>Título</mat-label>
+      <input matInput formControlName="title" maxlength="120" required />
       @if (form.controls.title.hasError('required') && form.controls.title.touched) {
         <mat-error>El título es obligatorio</mat-error>
       }
@@ -78,6 +78,9 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
+  @if (form.invalid) {
+    <span class="dialog-hint">Completa el título para guardar.</span>
+  }
   <button mat-button type="button" (click)="cancel()" [disabled]="saving()">Cancelar</button>
   <button
     mat-flat-button

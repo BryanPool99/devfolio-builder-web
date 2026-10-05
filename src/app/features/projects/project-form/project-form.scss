@@ -4,16 +4,16 @@ mat-dialog-content {
     flex-direction: column;
     gap: 0.25rem;
     min-width: min(480px, 80vw);
-    padding-top: 0.5rem;
+    padding-top: var(--df-space-2);
   }
 }
 
 .catalog-loading {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.5rem 0;
-  color: rgba(0, 0, 0, 0.6);
+  gap: var(--df-space-3);
+  padding: var(--df-space-2) 0;
+  color: var(--mat-sys-on-surface-variant);
   font-size: 0.875rem;
 }
 
@@ -21,32 +21,45 @@ mat-dialog-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1rem;
-  margin-top: 0.5rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  border-radius: 8px;
-  background: #f7f9fd;
+  gap: var(--df-space-4);
+  margin-top: var(--df-space-2);
+  padding: var(--df-space-3) var(--df-space-4);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--df-radius-sm);
+  background: var(--mat-sys-surface-container);
 
   &__text {
     display: flex;
     flex-direction: column;
-    gap: 0.125rem;
+    gap: var(--df-space-1);
+    min-width: 0;
+    flex: 1;
   }
 
   &__label {
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
   }
 
   &__hint {
-    color: rgba(0, 0, 0, 0.6);
+    color: var(--mat-sys-on-surface-variant);
     font-size: 0.75rem;
+    overflow-wrap: anywhere;
   }
 }
 
 .error {
-  color: #c62828;
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
   font-size: 0.875rem;
-  padding: 0.5rem 0;
+  padding: var(--df-space-3) var(--df-space-4);
+  border-radius: var(--df-radius-sm);
+  margin-top: var(--df-space-2);
+}
+
+.dialog-hint {
+  margin-right: auto;
+  max-width: 260px;
+  font-size: 0.8125rem;
+  color: var(--mat-sys-on-surface-variant);
 }

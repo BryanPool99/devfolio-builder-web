@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 
 import { authGuard, guestGuard } from './core/auth/auth.guard';
+import { editorDirtyGuard } from './features/editor/editor.guard';
 
 export const routes: Routes = [
   {
@@ -31,6 +32,7 @@ export const routes: Routes = [
       },
       {
         path: 'editor',
+        canDeactivate: [editorDirtyGuard],
         loadComponent: () => import('./features/editor/editor').then((m) => m.EditorComponent),
       },
     ],
