@@ -42,7 +42,7 @@
 
 .hero {
   padding: 3rem 1.5rem;
-  background: linear-gradient(135deg, #3f51b5, #1a237e);
+  background: linear-gradient(135deg, var(--mat-sys-primary), var(--df-indigo-900));
   color: #fff;
 
   &__image {
@@ -60,7 +60,6 @@
 
   p {
     margin: 0 0 1.25rem;
-    opacity: 0.9;
     max-width: 560px;
   }
 
@@ -69,7 +68,7 @@
     padding: 0.6rem 1.4rem;
     border-radius: 999px;
     background: #fff;
-    color: #1a237e;
+    color: var(--df-indigo-900);
     font-weight: 500;
     text-decoration: none;
   }
@@ -88,8 +87,8 @@
 .chip {
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  background: #e8eefc;
-  color: #1a4bce;
+  background: var(--df-indigo-50);
+  color: var(--df-indigo-700);
   font-size: 0.85rem;
   text-decoration: none;
 }
@@ -136,15 +135,15 @@
     align-items: center;
     gap: 0.25rem;
     font-size: 0.8rem;
-    color: #3f51b5;
+    color: var(--mat-sys-primary);
     text-decoration: none;
-    border: 1px solid rgba(63, 81, 181, 0.45);
+    border: 1px solid color-mix(in srgb, var(--mat-sys-primary) 45%, transparent);
     border-radius: 999px;
     padding: 0.3rem 0.75rem;
     transition: background 0.15s ease;
 
     &:hover {
-      background: #eef0fb;
+      background: var(--df-indigo-50);
     }
 
     mat-icon {
@@ -164,7 +163,7 @@
   gap: 1rem;
 
   li {
-    border-left: 3px solid #3f51b5;
+    border-left: 3px solid var(--mat-sys-primary);
     padding-left: 1rem;
   }
 

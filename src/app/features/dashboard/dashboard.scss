@@ -1,12 +1,16 @@
 .dashboard {
   max-width: 960px;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
+  padding: var(--df-space-8) var(--df-gutter);
 
   h1 {
-    margin: 0 0 1.5rem;
-    font-size: 1.5rem;
-    font-weight: 500;
+    margin: 0 0 var(--df-space-6);
+    font: var(--df-page-title);
+  }
+
+  mat-card-title {
+    font-weight: 700;
+    letter-spacing: -0.01em;
   }
 }
 
@@ -14,12 +18,12 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  padding: 3rem 0;
-  color: rgba(0, 0, 0, 0.6);
+  gap: var(--df-space-2);
+  padding: var(--df-space-12) 0;
+  color: var(--mat-sys-on-surface-variant);
 
   &.error {
-    color: #c62828;
+    color: var(--mat-sys-error);
   }
 
   p {
@@ -30,14 +34,29 @@
 .cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1rem;
+  gap: var(--df-space-4);
+
+  mat-icon[mat-card-avatar] {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+  }
+
+  .stat {
+    font: var(--df-stat);
+  }
 }
 
 .recent {
-  margin-top: 1.5rem;
+  margin-top: var(--df-space-6);
 
   .empty {
     align-items: center;
-    padding: 2rem 0;
+    padding: var(--df-space-8) 0;
   }
 }

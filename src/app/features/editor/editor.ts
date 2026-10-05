@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, OnInit, computed, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -99,10 +107,30 @@ export class EditorComponent implements OnInit {
   }
 
   removeBlock(block: Block): void {
-    this.blockService.replaceAll(this.blockService.blocks().filter((b) => b.id !== block.id));
+    const blocks = this.blockService.blocks();
+    const index = blocks.findIndex((b) => b.id === block.id);
+    if (index === -1) {
+      return;
+    }
+    this.blockService.replaceAll(blocks.filter((b) => b.id !== block.id));
     if (this.selectedId() === block.id) {
       this.selectedId.set(null);
     }
+    this.snackBar
+      .open('Bloque eliminado', 'Deshacer', { duration: 6000 })
+      .onAction()
+      .subscribe(() => this.restoreBlock(block, index));
+  }
+
+  private restoreBlock(block: Block, index: number): void {
+    const blocks = [...this.blockService.blocks()];
+    // El PUT regenera ids: si el id ya existe, el bloque restaurado necesita uno nuevo.
+    const restored = blocks.some((b) => b.id === block.id)
+      ? { ...block, id: localBlockId-- }
+      : block;
+    blocks.splice(Math.min(index, blocks.length), 0, restored);
+    this.blockService.replaceAll(blocks);
+    this.selectedId.set(restored.id);
   }
 
   toggleSelect(blockId: number): void {
@@ -161,5 +189,13 @@ export class EditorComponent implements OnInit {
         this.snackBar.open('No se pudo guardar', 'Cerrar', { duration: 5000 });
       },
     });
+  }
+
+  @HostListener('window:beforeunload', ['$event'])
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.blockService.dirty()) {
+      event.preventDefault();
+      event.returnValue = 'Tienes cambios sin guardar.';
+    }
   }
 }

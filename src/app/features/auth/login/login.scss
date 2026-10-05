@@ -3,12 +3,31 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 1.5rem;
+  padding: var(--df-gutter);
 }
 
 .auth-card {
   width: 100%;
   max-width: 400px;
+  background: var(--mat-sys-surface-container-lowest);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--df-radius-lg);
+}
+
+.auth-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--df-radius-md);
+  background: var(--mat-sys-primary-container);
+  color: var(--mat-sys-on-primary-container);
+}
+
+mat-card-title {
+  font-weight: 700;
+  letter-spacing: -0.01em;
 }
 
 mat-card-content {
@@ -16,24 +35,29 @@ mat-card-content {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    padding-top: 1rem;
+    padding-top: var(--df-space-4);
   }
 }
 
 .error {
-  color: #c62828;
+  background: var(--mat-sys-error-container);
+  color: var(--mat-sys-on-error-container);
   font-size: 0.875rem;
-  padding: 0.5rem 0;
+  padding: var(--df-space-3) var(--df-space-4);
+  border-radius: var(--df-radius-sm);
+  margin-top: var(--df-space-2);
 }
 
 .submit {
+  width: 100%;
   height: 44px;
-  margin-top: 0.5rem;
+  margin-top: var(--df-space-2);
 }
 
 mat-card-actions {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding-bottom: 1rem;
+  gap: var(--df-space-1);
+  padding-bottom: var(--df-space-4);
 }
